@@ -17,7 +17,7 @@ library('stringr')
 library('float')
 library('data.table')
 library('lubridate')
-
+library('bookdown')
 
 # Set working directory
  #Load in raw data for Police Apprehensions
@@ -35,6 +35,15 @@ library('lubridate')
      "Age"= AgeGroup
    )
  save(clean_dat,file="outputs/rda/clean_dat.rda")
+ 
+ ### Cleaning data for Apprehension data by sex, age in 2020 ###
+ clean_age_dat <-
+   clean_dat |>
+   filter(Year %in% c(2020)) |>
+   select(Year, Sex, Age)
+   
+save(clean_age_dat, file='outputs/rda/clean_age_dat.rda')
+ 
  
  ### Create new dataframe isolating the number of Apprehensions per year ### 
  apprehension_count <-
@@ -121,7 +130,6 @@ number_of_calls <- c(9789, 53854, 29588)
 graph_frame <- data.frame(type_of_call, number_of_calls)
 
 save(graph_frame, file = ('outputs/rda/graph_frame.rda'))
-
 
 
 
