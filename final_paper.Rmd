@@ -1,0 +1,162 @@
+---
+title: "The Effect of Covid-19 on Torontonian Mental Health" 
+21`author: "Chyna Hui"
+date: "12/04/2022"
+output: pdf_document
+header-includes:
+  \usepackage{float}
+  \floatplacement{figure}{H}
+toc = TRUE:
+abstract: The Covid-19 pandemic resulted in goverments implementation of several lockdown mandates in Toronto since 2020. Although the lockdowns have ended, the consequences of this time on mental health persists. This paper uses data from Open Data Toronto to determine relationships between increasing mental health calls to police and access to mental health services in the city.
+bibliography: references.bib 
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.pos = "!H", echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+
+```
+
+```{r}
+### Loading cleaned data from R-script ###
+load('outputs/rda/clean_dat.rda')
+load('outputs/rda/clean_calls.rda')
+load('outputs/rda/apprehension_count.rda')
+load('outputs/rda/clean_crisis_calls.rda')
+load('outputs/rda/clean_crisis_calls_2020.rda')
+load('outputs/rda/crisis_call_count.rda')
+load('outputs/rda/clean_crisis_calls_2020_months.rda')
+load('outputs/rda/calls_table.rda')
+load('outputs/rda/graph_frame.rda')
+load('outputs/rda/app_graph_frame.rda')
+```
+
+
+# Introduction
+Mental Health crises are unfamiliar occurrences in Toronto and around the world. Many of the victims end up in confrontations with police, with lethal force against them. The Toronto Police record around 20,000 calls per year related to persons in crisis. The Covid-19 pandemic challenged the lives of Torontonians further, disrupting many aspects of daily life. Furthermore, the lockdown implementation for public health had crucial consequences to the mental well-being of many individuals. As a result of this, rates of attempted suicides, drug abuse, and domestic violence have increased significantly in the city. In this paper, I will discuss the number of mental health related calls made and its relation to the number of apprehensions by police. Additionally, other factors such as gender, age, and neighborhood will be analyzed to determine correlations to the number of received calls. This analysis will propose reasons based on this data for why an increase of mental health services are crucial to Toronto's well-being as a whole. 
+
+
+
+## Literature 
+
+
+# Data
+To analyze the occurrences of Mental Health related cases with Toronto police intervention, data was downloaded from the Toronto Police Opendata portal. 
+
+## Scope
+The Toronto Police released online datasets related to Mental Health cases in February 2022 as part of the Mental Health Act (MHA). The datasets used in this paper include; 'Mental Health Apprehensions' and 'Dispatched Calls by Division'.
+
+The data was cleaned using the R programming language' ^[@Rref].
+
+The dataset 'Mental Health Apprehensions' consists of data from 2014 to 2020. Each row in the dataset represents an individual apprehended by Toronto Police under the Mental Health Act (MHA). The date of occurrence, location, sex, age, and apprehension type is included in the raw data. The types of Apprehensions vary, and are important to consider. MHA 17-Police's power of apprehension, MHA 15 or Form 1 refers to an application for psychiatric assessment, MHA 16 or Form 2-Order of Examination, MHA 28-Elopee Order for Return, and MHA 33.4- Community Treatment for Examination. 
+The dataset 'Dispatched Calls by Division' provides counts of the number of calls that Toronto Police received from 2014-2020 based on neighborhood. 
+
+## Source and Methodology
+
+## Tables
+```{r 201820t, echo=FALSE}
+### Constructing table for 2018-2020 Crisis Calls 
+crisis_call_count|>
+  knitr::kable(
+    caption= "Crisis Calls to Toronto Police in 2018-2020",
+    col.names = c("Year", "Number of Calls" ),
+    booktabs=TRUE,
+    linesep="",
+    align = c('c', 'c'),
+  ) |>
+  kable_styling(latex_options = "HOLD_position")|>
+  column_spec(1:2, color = "black")|>
+  row_spec(0, color = "black")
+```
+  )
+
+```{r appt, echo=FALSE}
+  ### Constructing table for Mental Health Apprehensions in 2018 to 2020.
+apprehension_count|>
+  knitr::kable(
+    caption= "Mental Health Apprehensions in 2018-2020",
+    col.names = c("Year", "Number of Apprehensions" ),
+    booktabs=TRUE,
+    linesep="",
+    align = c('c', 'c'),
+  ) |>
+  kable_styling(latex_options = "HOLD_position")|>
+  column_spec(1:2, color = "black")|>
+  row_spec(0, color = "black")
+
+```
+
+```{r 2020t, echo=FALSE}
+### Constructing table for 2020 Crisis Calls to Toronto Police in 2020
+calls_table|>
+  knitr::kable(
+    caption= "Number of Crisis Calls made to Toronto Police in 2020 by Month",
+    col.names = c("Month", "Number of Calls" ),
+    booktabs=TRUE,
+    linesep="",
+    align = c('c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c', 'c'),
+  ) |>
+  kable_styling(latex_options = "HOLD_position")|>
+  column_spec(1:2, color = "black")|>
+  row_spec(0, color = "black")
+```
+
+## Graphs 
+
+
+```{r crisis2020fig, fig.cap="Number and Types of Crisis Calls made to Toronto Police in 2020", echo=FALSE}
+### Constructing 2020 Crisis Call Graph 
+graph_frame|>
+  ggplot(mapping=aes(x=type_of_call, y=number_of_calls, fill=type_of_call))+
+  geom_bar(stat = "identity")+
+  theme_bw() +
+  labs(title = "Number and Types of Crisis Calls made to Toronto Police in 2020.",
+       x="Type of Call",
+       y="Number of Calls",
+       fill="Type of Call"
+       )
+
+  
+
+```
+
+
+
+```{r appfig, fig.cap="Mental Health Apprehensions in 2018-2020", echo=FALSE}
+### Constructing 2018-2020 Mental Health Apprehensions Graph 
+app_graph_frame|>
+  ggplot(mapping=aes(x=year, y=number_of_apprehensions, fill=number_of_apprehensions))+
+  geom_bar(stat = "identity")+
+  theme_bw() +
+  labs(title = "Mental Health Apprehensions in 2018-2020.",
+       x="Year",
+       y="Number of Apprehensions",
+       fill="Number of Apprehensions"
+       )
+
+  
+
+```
+
+
+
+
+## Discussion 
+Discussions surronding the mental health of populations have increased significantly over the past decade, as awareness and resources for mental health have also increased. Cases that are affiliated with individuals that have mental health issues must be treated in a different manner than normal circumstances. However, it is evident in Toronto and around the world of the fatalities that these conflicts result in. 
+
+The graph in (insert figure) shows the spike in Crisis Calls made to Toronto Police in 2020, from March on. This is parallel to the beginning of the Covid-19 pandemic and the 
+
+# Limitations
+The data provided by the Toronto Police are thorough, however, also the impact of on the mental health of children from the pandemic is widely underrepresented. In the datasets provided by Toronto Police, it is explicitly stated that individuals under 17 were excluded from the data for the privacy and protection the identity of minors. 
+
+Furthermore, there are instances in the data where individuals apprehended by Toronto Police are not classified in the sex category, and listed as 'Not Recorded'. 
+
+## Conclusion
+The data collecting surrounding mental health related crisis and apprehensions in Toronto was sufficient for the police to finally take action. In 2022, a special mobile unit is dispatched, to potentially deescalate the situation without the presence of police force. These mobile units are headed by a harm-reduction worker, nurse, indigenous elder, or de-escalation expert. 
+
